@@ -454,6 +454,9 @@ lwmqtt_err_t lwmqtt_decode_publish(uint8_t *buf, size_t buf_len, bool *dup, uint
     if (err != LWMQTT_SUCCESS) {
       return err;
     }
+    if (*packet_id == 0) {
+      return LWMQTT_MISSING_OR_WRONG_PACKET;
+    }
   } else {
     *packet_id = 0;
   }

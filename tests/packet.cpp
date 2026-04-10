@@ -561,6 +561,43 @@ TEST(Packet, DecodePublishInvalidQOS) {
   EXPECT_EQ(err, LWMQTT_MISSING_OR_WRONG_PACKET);
 }
 
+TEST(Packet, DecodePublishInvalidPacketId) {
+  uint8_t pkt[24] = {
+      LWMQTT_PUBLISH_PACKET << 4u | 2,
+      22,
+      0,
+      6,
+      'l',
+      'w',
+      'm',
+      'q',
+      't',
+      't',
+      0,
+      0,
+      's',
+      'e',
+      'n',
+      'd',
+      ' ',
+      'm',
+      'e',
+      ' ',
+      'h',
+      'o',
+      'm',
+      'e',
+  };
+
+  bool dup = false;
+  uint16_t packet_id = 0;
+  lwmqtt_string_t topic = lwmqtt_default_string;
+  lwmqtt_message_t msg = lwmqtt_default_message;
+  lwmqtt_err_t err = lwmqtt_decode_publish(pkt, sizeof(pkt), &dup, &packet_id, &topic, &msg);
+
+  EXPECT_EQ(err, LWMQTT_MISSING_OR_WRONG_PACKET);
+}
+
 TEST(Packet, EncodePublish1) {
   uint8_t pkt[12] = {
       LWMQTT_PUBLISH_PACKET << 4u | 11,
