@@ -53,7 +53,7 @@ lwmqtt_err_t lwmqtt_posix_network_connect(lwmqtt_posix_network_t *network, char 
   // resolve address
   struct addrinfo *result = NULL;
   int rc = getaddrinfo(host, NULL, &hints, &result);
-  if (rc < 0) {
+  if (rc != 0) {
     return LWMQTT_NETWORK_FAILED_CONNECT;
   }
 
