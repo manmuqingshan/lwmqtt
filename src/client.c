@@ -404,6 +404,8 @@ lwmqtt_err_t lwmqtt_connect(lwmqtt_client_t *client, lwmqtt_connect_options_t *o
     options = &def_options;
   }
 
+  // TODO: Reject password-only credentials (MQTT 3.1.1 compliance).
+
   // set command timer
   client->timer_set(client->command_timer, timeout);
 
