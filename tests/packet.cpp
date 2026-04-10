@@ -166,7 +166,7 @@ TEST(Packet, EncodeConnect2) {
   lwmqtt_connect_options_t opts = lwmqtt_default_connect_options;
 
   size_t len;
-  lwmqtt_err_t err = lwmqtt_encode_connect(buf, sizeof(pkt), &len, &opts, nullptr);
+  lwmqtt_err_t err = lwmqtt_encode_connect(buf, sizeof(buf), &len, &opts, nullptr);
 
   EXPECT_EQ(err, LWMQTT_SUCCESS);
   EXPECT_ARRAY_EQ(pkt, buf, len);
@@ -243,6 +243,24 @@ TEST(Packet, EncodeConnect3) {
   lwmqtt_err_t err = lwmqtt_encode_connect(buf, sizeof(pkt), &len, &opts, &will);
 
   EXPECT_EQ(err, LWMQTT_SUCCESS);
+  EXPECT_ARRAY_EQ(pkt, buf, len);
+}
+
+TEST(Packet, EncodeConnectPasswordOnly) {
+  uint8_t pkt[22] = {
+      LWMQTT_CONNECT_PACKET << 4u, 20, 0, 4, 'M', 'Q', 'T', 'T', 4, 194, 0, 60, 0, 0, 0, 0, 0, 4, 'p', 'a', 's', 's',
+  };
+
+  uint8_t buf[sizeof(pkt)];
+
+  lwmqtt_connect_options_t opts = lwmqtt_default_connect_options;
+  opts.password = lwmqtt_string("pass");
+
+  size_t len = 0;
+  lwmqtt_err_t err = lwmqtt_encode_connect(buf, sizeof(buf), &len, &opts, nullptr);
+
+  EXPECT_EQ(err, LWMQTT_SUCCESS);
+  EXPECT_EQ(len, sizeof(pkt));
   EXPECT_ARRAY_EQ(pkt, buf, len);
 }
 
@@ -593,6 +611,19 @@ TEST(Packet, DecodeSubackError) {
   lwmqtt_err_t err = lwmqtt_decode_suback(pkt, sizeof(pkt), &packet_id, 2, &count, granted_qos_levels);
 
   EXPECT_EQ(err, LWMQTT_REMAINING_LENGTH_MISMATCH);
+}
+
+TEST(Packet, DecodeSubackOverflow) {
+  uint8_t pkt[6] = {
+      LWMQTT_SUBACK_PACKET << 4u, 4, 0, 7, 0, 1,
+  };
+
+  uint16_t packet_id;
+  int count = 0;
+  lwmqtt_qos_t granted_qos_levels[1];
+  lwmqtt_err_t err = lwmqtt_decode_suback(pkt, sizeof(pkt), &packet_id, 1, &count, granted_qos_levels);
+
+  EXPECT_EQ(err, LWMQTT_SUBACK_ARRAY_OVERFLOW);
 }
 
 TEST(Packet, EncodeSubscribe) {

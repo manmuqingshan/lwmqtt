@@ -188,7 +188,7 @@ lwmqtt_err_t lwmqtt_encode_connect(uint8_t *buf, size_t buf_len, size_t *len, lw
   }
 
   // write password if present
-  if (options->username.len > 0 && options->password.len > 0) {
+  if (options->password.len > 0) {
     err = lwmqtt_write_string(&buf_ptr, buf_end, options->password);
     if (err != LWMQTT_SUCCESS) {
       return err;
@@ -637,7 +637,7 @@ lwmqtt_err_t lwmqtt_decode_suback(uint8_t *buf, size_t buf_len, uint16_t *packet
   // read all suback codes
   for (*count = 0; *count < (int)rem_len - 2; (*count)++) {
     // check max count
-    if (*count > max_count) {
+    if (*count >= max_count) {
       return LWMQTT_SUBACK_ARRAY_OVERFLOW;
     }
 
