@@ -374,6 +374,32 @@ TEST(Packet, DecodeAckError2) {
   EXPECT_EQ(err, LWMQTT_REMAINING_LENGTH_MISMATCH);
 }
 
+TEST(Packet, DecodeAckInvalidPubrelFlags) {
+  uint8_t pkt[4] = {
+      (LWMQTT_PUBREL_PACKET << 4u), 2,
+      0,
+      7,
+  };
+
+  uint16_t packet_id = 0;
+  lwmqtt_err_t err = lwmqtt_decode_ack(pkt, sizeof(pkt), LWMQTT_PUBREL_PACKET, &packet_id);
+
+  EXPECT_EQ(err, LWMQTT_MISSING_OR_WRONG_PACKET);
+}
+
+TEST(Packet, DecodeAckInvalidPubackFlags) {
+  uint8_t pkt[4] = {
+      (LWMQTT_PUBACK_PACKET << 4u) | 0x02u, 2,
+      0,
+      7,
+  };
+
+  uint16_t packet_id = 0;
+  lwmqtt_err_t err = lwmqtt_decode_ack(pkt, sizeof(pkt), LWMQTT_PUBACK_PACKET, &packet_id);
+
+  EXPECT_EQ(err, LWMQTT_MISSING_OR_WRONG_PACKET);
+}
+
 TEST(Packet, EncodeAck) {
   uint8_t pkt[4] = {
       LWMQTT_PUBACK_PACKET << 4u, 2,
@@ -498,6 +524,41 @@ TEST(Packet, DecodePublishError) {
   lwmqtt_err_t err = lwmqtt_decode_publish(pkt, sizeof(pkt), &dup, &packet_id, &topic, &msg);
 
   EXPECT_EQ(err, LWMQTT_BUFFER_TOO_SHORT);
+}
+
+TEST(Packet, DecodePublishInvalidQOS) {
+  uint8_t pkt[22] = {
+      (LWMQTT_PUBLISH_PACKET << 4u) | 0x06u,
+      20,
+      0,
+      6,
+      'l',
+      'w',
+      'm',
+      'q',
+      't',
+      't',
+      's',
+      'e',
+      'n',
+      'd',
+      ' ',
+      'm',
+      'e',
+      ' ',
+      'h',
+      'o',
+      'm',
+      'e',
+  };
+
+  bool dup = false;
+  uint16_t packet_id = 0;
+  lwmqtt_string_t topic = lwmqtt_default_string;
+  lwmqtt_message_t msg = lwmqtt_default_message;
+  lwmqtt_err_t err = lwmqtt_decode_publish(pkt, sizeof(pkt), &dup, &packet_id, &topic, &msg);
+
+  EXPECT_EQ(err, LWMQTT_MISSING_OR_WRONG_PACKET);
 }
 
 TEST(Packet, EncodePublish1) {

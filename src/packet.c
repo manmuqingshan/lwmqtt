@@ -317,6 +317,12 @@ lwmqtt_err_t lwmqtt_decode_ack(uint8_t *buf, size_t buf_len, lwmqtt_packet_type_
     return LWMQTT_MISSING_OR_WRONG_PACKET;
   }
 
+  // check fixed header flags
+  uint8_t flags = lwmqtt_read_bits(header, 0, 4);
+  if ((packet_type == LWMQTT_PUBREL_PACKET && flags != 0x02u) || (packet_type != LWMQTT_PUBREL_PACKET && flags != 0)) {
+    return LWMQTT_MISSING_OR_WRONG_PACKET;
+  }
+
   // read remaining length
   uint32_t rem_len;
   err = lwmqtt_read_varnum(&buf_ptr, buf + buf_len, &rem_len);
@@ -413,8 +419,7 @@ lwmqtt_err_t lwmqtt_decode_publish(uint8_t *buf, size_t buf_len, bool *dup, uint
       msg->qos = LWMQTT_QOS2;
       break;
     default:
-      msg->qos = LWMQTT_QOS0;
-      break;
+      return LWMQTT_MISSING_OR_WRONG_PACKET;
   }
 
   // read remaining length
