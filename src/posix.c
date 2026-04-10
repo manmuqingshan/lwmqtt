@@ -156,6 +156,9 @@ lwmqtt_err_t lwmqtt_posix_network_read(void *ref, uint8_t *buffer, size_t len, s
   // cast network reference
   lwmqtt_posix_network_t *n = (lwmqtt_posix_network_t *)ref;
 
+  // the callback contract expects a per-call byte count
+  *received = 0;
+
   // set timeout
   struct timeval t = {.tv_sec = timeout / 1000, .tv_usec = (timeout % 1000) * 1000};
   int rc = setsockopt(n->socket, SOL_SOCKET, SO_RCVTIMEO, (char *)&t, sizeof(t));
@@ -173,8 +176,8 @@ lwmqtt_err_t lwmqtt_posix_network_read(void *ref, uint8_t *buffer, size_t len, s
     return LWMQTT_NETWORK_FAILED_READ;
   }
 
-  // increment counter
-  *received += bytes;
+  // set counter
+  *received = (size_t)bytes;
 
   return LWMQTT_SUCCESS;
 }
@@ -182,6 +185,9 @@ lwmqtt_err_t lwmqtt_posix_network_read(void *ref, uint8_t *buffer, size_t len, s
 lwmqtt_err_t lwmqtt_posix_network_write(void *ref, uint8_t *buffer, size_t len, size_t *sent, uint32_t timeout) {
   // cast network reference
   lwmqtt_posix_network_t *n = (lwmqtt_posix_network_t *)ref;
+
+  // the callback contract expects a per-call byte count
+  *sent = 0;
 
   // set timeout
   struct timeval t = {.tv_sec = timeout / 1000, .tv_usec = (timeout % 1000) * 1000};
@@ -198,8 +204,8 @@ lwmqtt_err_t lwmqtt_posix_network_write(void *ref, uint8_t *buffer, size_t len, 
     return LWMQTT_NETWORK_FAILED_WRITE;
   }
 
-  // increment counter
-  *sent += bytes;
+  // set counter
+  *sent = (size_t)bytes;
 
   return LWMQTT_SUCCESS;
 }
