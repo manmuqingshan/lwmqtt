@@ -2,7 +2,7 @@
 
 void lwmqtt_init(lwmqtt_client_t *client, uint8_t *write_buf, size_t write_buf_size, uint8_t *read_buf,
                  size_t read_buf_size) {
-  client->last_packet_id = 1;
+  client->last_packet_id = 0;
   client->keep_alive_interval = 0;
   client->pong_pending = false;
 
@@ -506,6 +506,9 @@ lwmqtt_err_t lwmqtt_publish(lwmqtt_client_t *client, lwmqtt_publish_options_t *o
     if (err != LWMQTT_SUCCESS) {
       return err;
     }
+
+    // Refresh keep-alive after the payload has been fully transmitted.
+    client->timer_set(client->keep_alive_timer, client->keep_alive_interval);
   }
 
   // immediately return on qos zero
