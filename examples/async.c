@@ -7,7 +7,7 @@
 
 #define COMMAND_TIMEOUT 5000
 
-lwmqtt_posix_network_t network = {0};
+lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
 
 lwmqtt_posix_timer_t timer1, timer2;
 

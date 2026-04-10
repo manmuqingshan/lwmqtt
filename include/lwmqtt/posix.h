@@ -34,6 +34,12 @@ typedef struct {
 } lwmqtt_posix_network_t;
 
 /**
+ * The default initializer for POSIX network objects.
+ */
+#define lwmqtt_default_posix_network \
+  { -1 }
+
+/**
  * Function to establish a POSIX network connection.
  *
  * @param network The network object.

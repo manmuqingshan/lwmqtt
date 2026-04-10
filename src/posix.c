@@ -75,6 +75,7 @@ lwmqtt_err_t lwmqtt_posix_network_connect(lwmqtt_posix_network_t *network, char 
 
   // return error if none found
   if (selected == NULL) {
+    freeaddrinfo(result);
     return LWMQTT_NETWORK_FAILED_CONNECT;
   }
 
@@ -96,6 +97,8 @@ lwmqtt_err_t lwmqtt_posix_network_connect(lwmqtt_posix_network_t *network, char 
   // connect socket
   rc = connect(network->socket, (struct sockaddr *)&address, sizeof(address));
   if (rc < 0) {
+    close(network->socket);
+    network->socket = -1;
     return LWMQTT_NETWORK_FAILED_CONNECT;
   }
 
@@ -104,9 +107,9 @@ lwmqtt_err_t lwmqtt_posix_network_connect(lwmqtt_posix_network_t *network, char 
 
 void lwmqtt_posix_network_disconnect(lwmqtt_posix_network_t *network) {
   // close socket if present
-  if (network->socket) {
+  if (network->socket >= 0) {
     close(network->socket);
-    network->socket = 0;
+    network->socket = -1;
   }
 }
 

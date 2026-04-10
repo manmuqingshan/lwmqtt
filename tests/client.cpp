@@ -44,7 +44,7 @@ static void big_message_arrived(lwmqtt_client_t *c, void *ref, lwmqtt_string_t t
 }
 
 TEST(Client, PublishSubscribeQOS0) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -103,7 +103,7 @@ TEST(Client, PublishSubscribeQOS0) {
 }
 
 TEST(Client, PublishSubscribeQOS1) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -162,7 +162,7 @@ TEST(Client, PublishSubscribeQOS1) {
 }
 
 TEST(Client, PublishSubscribeQOS2) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -221,7 +221,7 @@ TEST(Client, PublishSubscribeQOS2) {
 }
 
 TEST(Client, BufferOverflow) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -282,7 +282,7 @@ TEST(Client, BufferOverflow) {
 }
 
 TEST(Client, OverflowDropping) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -343,7 +343,7 @@ TEST(Client, OverflowDropping) {
 }
 
 TEST(Client, BigBuffersAndPayload) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -402,7 +402,7 @@ TEST(Client, BigBuffersAndPayload) {
 }
 
 TEST(Client, MultipleSubscriptions) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -464,7 +464,7 @@ TEST(Client, MultipleSubscriptions) {
 }
 
 TEST(Client, PublishDupQOS1) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
@@ -537,7 +537,7 @@ TEST(Client, PublishDupQOS1) {
 }
 
 TEST(Client, PublishDupQOS2) {
-  lwmqtt_posix_network_t network;
+  lwmqtt_posix_network_t network = lwmqtt_default_posix_network;
   lwmqtt_posix_timer_t timer1, timer2;
 
   lwmqtt_client_t client;
