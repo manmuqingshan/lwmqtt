@@ -114,3 +114,13 @@ TEST(Helpers, VarNumMax) {
 
   EXPECT_EQ(num, (uint32_t)268435455);
 }
+
+TEST(Helpers, VarNumLengthBoundaries) {
+  int len = 0;
+
+  EXPECT_EQ(lwmqtt_varnum_length(2097151, &len), LWMQTT_SUCCESS);
+  EXPECT_EQ(len, 3);
+
+  EXPECT_EQ(lwmqtt_varnum_length(268435455, &len), LWMQTT_SUCCESS);
+  EXPECT_EQ(len, 4);
+}
